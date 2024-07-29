@@ -2,7 +2,7 @@
 include 'fetch_data.php';
 
 // Ambil data dari API
-$api_url = 'http://143.198.218.9:8000/api/forums'; // URL API kamu
+$api_url = 'http://143.198.218.9:30000/api/forums'; // URL API kamu
 $response = file_get_contents($api_url);
 $data = json_decode($response, true);
 

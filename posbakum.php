@@ -2,7 +2,7 @@
 include "fetch_data.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $url = 'http://143.198.218.9:8000/api/posbakum';
+    $url = 'http://143.198.218.9:30000/api/posbakum';
     $token = $_SESSION['token']; // Ambil token dari session
 
     $data = [

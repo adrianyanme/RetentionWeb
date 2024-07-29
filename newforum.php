@@ -2,7 +2,7 @@
 
 <?php
 // Mengambil data dari API
-$api_url = 'http://143.198.218.9:8000/api/forums';
+$api_url = 'http://143.198.218.9:30000/api/forums';
 $response = file_get_contents($api_url);
 $data = json_decode($response, true);
 ?>

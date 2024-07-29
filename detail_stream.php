@@ -3,7 +3,7 @@ include "fetch_data.php";
 $streamId = $_GET['id'];
 
 // Ambil data dari API
-$apiUrl = "http://143.198.218.9:8000/api/streaming/$streamId";
+$apiUrl = "http://143.198.218.9:30000/api/streaming/$streamId";
 $response = file_get_contents($apiUrl);
 $stream = json_decode($response, true)['data'];
 $liveChats = $stream['livechat'];
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'])) {
         ],
     ];
     $context  = stream_context_create($options);
-    $result = @file_get_contents('http://143.198.218.9:8000/api/streaming/comment', false, $context);
+    $result = @file_get_contents('http://143.198.218.9:30000/api/streaming/comment', false, $context);
     if ($result === FALSE) {
         $error = error_get_last();
         echo "Error: " . $error['message'];

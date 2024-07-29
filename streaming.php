@@ -1,7 +1,7 @@
 <?php
 include 'fetch_data.php';
 // Ambil data dari API
-$apiUrl = "http://143.198.218.9:8000/api/streaming";
+$apiUrl = "http://143.198.218.9:30000/api/streaming";
 $response = file_get_contents($apiUrl);
 $data = json_decode($response, true);
 $streams = $data['data'];

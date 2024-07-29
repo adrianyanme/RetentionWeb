@@ -9,7 +9,7 @@ date_default_timezone_set('Asia/Jakarta');
 
 if ($forum_id) {
     // Mengambil data dari API detail forum
-    $api_url = 'http://143.198.218.9:8000/api/forums/' . $forum_id;
+    $api_url = 'http://143.198.218.9:30000/api/forums/' . $forum_id;
     $response = file_get_contents($api_url);
     $data = json_decode($response, true);
     $forum = $data['data'];

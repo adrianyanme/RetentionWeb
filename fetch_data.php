@@ -4,8 +4,8 @@ include 'Controller/api_me.php';
 include 'Controller/api_schedules.php';
 
 // URL API yang membutuhkan otentikasi
-$api_url = 'http://143.198.218.9:8000/api/me'; // Sesuaikan dengan URL API Anda
-$schedules_api_url = 'http://143.198.218.9:8000/api/schedules'; // URL API untuk jadwal
+$api_url = 'http://143.198.218.9:30000/api/me'; // Sesuaikan dengan URL API Anda
+$schedules_api_url = 'http://143.198.218.9:30000/api/schedules'; // URL API untuk jadwal
 
 if (isset($_SESSION['token'])) {
     $response_data = getUserData($api_url, $_SESSION['token']);

@@ -1,7 +1,7 @@
 <?php
 include "fetch_data.php";
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $url = 'http://143.198.218.9:8000/api/layanan-pengaduan';
+    $url = 'http://143.198.218.9:30000/api/layanan-pengaduan';
     $data = [
         'judullaporan' => $_POST['judullaporan'],
         'isilaporan' => $_POST['isilaporan'],

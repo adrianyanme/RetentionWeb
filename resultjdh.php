@@ -62,7 +62,7 @@
                     <?php
                     if (isset($_GET['keyword'])) {
                         $keyword = strtolower($_GET['keyword']);
-                        $apiUrl = 'http://143.198.218.9:8000/api/jdh';
+                        $apiUrl = 'http://143.198.218.9:30000/api/jdh';
                         $jsonData = file_get_contents($apiUrl);
                         $data = json_decode($jsonData, true)['data'];
 

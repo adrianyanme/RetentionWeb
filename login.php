@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error_message = 'Please enter both username and password.';
     } else {
         // URL API Login
-        $api_url = 'http://143.198.218.9:8000/api/login'; // Ganti dengan URL API login kamu
+        $api_url = 'http://143.198.218.9:30000/api/login'; // Ganti dengan URL API login kamu
 
         // Data yang akan dikirim ke API
         $data = array(
