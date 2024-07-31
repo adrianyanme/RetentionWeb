@@ -2,9 +2,55 @@
 
 <?php
 // Mengambil data dari API
-$api_url = 'http://143.198.218.9:30000/api/forums';
+$api_url = 'http://143.198.218.9/backend/api/forums';
 $response = file_get_contents($api_url);
 $data = json_decode($response, true);
+
+// Cek apakah user terverifikasi
+$isVerified = isset($response_data['verified']) && $response_data['verified'] === 'Yes';
+
+// Proses form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = $_POST['title'];
+    $content = $_POST['content'];
+    $tags = $_POST['tags'];
+    $files = $_FILES['files'];
+
+    // Buat array data untuk dikirim ke API
+    $postData = [
+        'title' => $title,
+        'content' => $content,
+        'tags' => $tags,
+    ];
+
+    // Proses file yang diunggah
+    if (!empty($files['name'][0])) {
+        foreach ($files['tmp_name'] as $key => $tmp_name) {
+            $postData['files[' . $key . ']'] = new CURLFile($tmp_name, $files['type'][$key], $files['name'][$key]);
+        }
+    }
+
+    // Inisialisasi cURL
+    $ch = curl_init($api_url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: Bearer ' . $_SESSION['token'],
+        'Content-Type: multipart/form-data'
+    ]);
+
+    // Eksekusi cURL
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode == 201) {
+        echo "<script>alert('Question submitted successfully!');</script>";
+    } else {
+        echo "<script>alert('Error submitting question: " . $response . "');</script>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -183,7 +229,7 @@ $data = json_decode($response, true);
                 questions.forEach(function(question) {
                     var questionItem = `
                         <div class="question-item" data-id="${question.id}">
-                            <img src="http://127.0.0.1:8000/storage/profileimg${question.writer.profileimg}" alt="User Image">
+                            <img src="http://143.198.218.9/backend/storage/profileimg/${question.writer.profileimg}" class="rounded-circle mb-2" alt="User Image" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; display: block;">
                             <div class="content">
                                 <h5>${question.title}</h5>
                                 <div class="stats">
@@ -216,35 +262,6 @@ $data = json_decode($response, true);
                 var questionId = $(this).data('id');
                 window.location.href = 'newforum_detail.php?id=' + questionId;
             });
-
-            // Show modal on button click
-            $('#ask-question-button').click(function() {
-                $('#askQuestionModal').modal('show');
-            });
-
-            // Handle form submission
-            $('#ask-question-form').submit(function(event) {
-                event.preventDefault();
-                var formData = new FormData(this);
-                $.ajax({
-                    url: 'http://127.0.0.1:8000/api/forums',
-                    type: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer <?= $_SESSION['token'] ?>'
-                    },
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        alert('Question submitted successfully!');
-                        $('#askQuestionModal').modal('hide');
-                        // Optionally, you can refresh the question list or redirect the user
-                    },
-                    error: function() {
-                        alert('Error submitting question');
-                    }
-                });
-            });
         });
     </script>
 </head>
@@ -267,10 +284,14 @@ $data = json_decode($response, true);
                 <div class="ask-question bg-dark">
                     <img src="https://static.vecteezy.com/system/resources/previews/007/117/340/non_2x/concept-illustration-of-people-frequently-asked-questions-around-question-marks-answer-to-question-metaphor-flat-modern-design-illustration-vector.jpg" alt="Illustration"> <!-- Ganti dengan path gambar ilustrasi Anda -->
                     <div class="content">
-                        <h5 class="text-warning" >Can't find an answer?</h5>
+                        <h5 class="text-warning">Can't find an answer?</h5>
                         <p class="text-white">Make use of a qualified tutor to get the answer</p>
                     </div>
-                    <button class="btn btn-primary" id="ask-question-button">Ask a Question</button>
+                    <?php if ($isVerified) { ?>
+                        <button class="btn btn-primary" id="ask-question-button" data-bs-toggle="modal" data-bs-target="#askQuestionModal">Ask a Question</button>
+                    <?php } else { ?>
+                        <p class="text-warning">Your account is not verified. Please verify your account to ask a question.</p>
+                    <?php } ?>
                 </div>
                 <div class="question-list">
                     <!-- Question items will be appended here by jQuery -->
@@ -288,7 +309,7 @@ $data = json_decode($response, true);
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="ask-question-form">
+                    <form id="ask-question-form" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="question-title" class="form-label">Title</label>
                             <input type="text" class="form-control" id="question-title" name="title" required>
@@ -302,8 +323,8 @@ $data = json_decode($response, true);
                             <input type="text" class="form-control" id="question-tags" name="tags" required>
                         </div>
                         <div class="mb-3">
-                            <label for="file" class="form-label">Image (Optional)</label>
-                            <input type="file" class="form-control" id="file" name="file">
+                            <label for="files" class="form-label">Images (Optional)</label>
+                            <input type="file" class="form-control" id="files" name="files[]" multiple>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>

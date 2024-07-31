@@ -2,7 +2,7 @@
 include "fetch_data.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $url = 'http://143.198.218.9:30000/api/gugatansederhana';
+    $url = 'http://143.198.218.9/backend/api/gugatansederhana';
     $token = $_SESSION['token']; // Ambil token dari session
 
     $data = [
@@ -34,6 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "<script>alert('Terjadi kesalahan: ' . $response);</script>";
     }
 }
+
+// Cek apakah user terverifikasi
+$isVerified = isset($response_data['verified']) && $response_data['verified'] === 'Yes';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -187,7 +190,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <label for="lampiran" class="form-label">Lampiran</label>
                         <input type="file" id="lampiran" name="lampiran" class="form-control" required>
                     </div>
-                    <button type="submit" class="btn btn-warning w-100">SUBMIT</button>
+                    <?php if ($isVerified) { ?>
+                        <button type="submit" class="btn btn-warning w-100">SUBMIT</button>
+                    <?php } else { ?>
+                        <p class="text-warning">Your account is not verified. Please verify your account to submit the form.</p>
+                    <?php } ?>
                 </form>
             </div>
         </div>

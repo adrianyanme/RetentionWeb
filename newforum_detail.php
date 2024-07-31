@@ -9,7 +9,7 @@ date_default_timezone_set('Asia/Jakarta');
 
 if ($forum_id) {
     // Mengambil data dari API detail forum
-    $api_url = 'http://143.198.218.9:30000/api/forums/' . $forum_id;
+    $api_url = 'http://143.198.218.9/backend/api/forums/' . $forum_id;
     $response = file_get_contents($api_url);
     $data = json_decode($response, true);
     $forum = $data['data'];
@@ -43,37 +43,10 @@ function time_elapsed_string($datetime, $full = false) {
     return $string ? implode(', ', $string) . ' lalu' : 'baru saja';
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_comment') {
-    $comment_content = $_POST['comment_content'];
-    $api_url = 'http://127.0.0.1:8000/api/forums/comment';
-    $data = array(
-        'forums_id' => $forum_id,
-        'comments_content' => $comment_content
-    );
-
-    $options = array(
-        'http' => array(
-            'header'  => "Content-type: application/json\r\n" .
-                         "Authorization: $token\r\n",
-            'method'  => 'POST',
-            'content' => json_encode($data),
-        ),
-    );
-
-    $context  = stream_context_create($options);
-    $result = file_get_contents($api_url, false, $context);
-    if ($result === FALSE) {
-        // Handle error
-    }
-
-    // Redirect to avoid form resubmission
-    header("Location: " . $_SERVER['REQUEST_URI']);
-    exit();
-}
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if ($_POST['action'] === 'add_comment') {
         $comment_content = $_POST['comment_content'];
-        $api_url = 'http://127.0.0.1:8000/api/forums/comment';
+        $api_url = 'http://143.198.218.9/backend/api/forums/comment';
         $data = array(
             'forums_id' => $forum_id,
             'comments_content' => $comment_content
@@ -98,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         header("Location: " . $_SERVER['REQUEST_URI']);
         exit();
     } elseif ($_POST['action'] === 'like') {
-        $api_url = 'http://127.0.0.1:8000/api/forums/' . $forum_id . '/like';
+        $api_url = 'http://143.198.218.9/backend/api/forums/' . $forum_id . '/like';
 
         $options = array(
             'http' => array(
@@ -117,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         header("Location: " . $_SERVER['REQUEST_URI']);
         exit();
     } elseif ($_POST['action'] === 'dislike') {
-        $api_url = 'http://127.0.0.1:8000/api/forums/' . $forum_id . '/dislike';
+        $api_url = 'http://143.198.218.9/backend/api/forums/' . $forum_id . '/dislike';
 
         $options = array(
             'http' => array(
@@ -134,6 +107,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
         // Redirect to avoid form resubmission
         header("Location: " . $_SERVER['REQUEST_URI']);
+        exit();
+    } elseif ($_POST['action'] === 'delete_forum') {
+        $api_url = 'http://143.198.218.9/backend/api/forums/' . $forum_id;
+
+        $options = array(
+            'http' => array(
+                'header'  => "Authorization: $token\r\n",
+                'method'  => 'DELETE',
+            ),
+        );
+
+        $context  = stream_context_create($options);
+        $result = file_get_contents($api_url, false, $context);
+        if ($result === FALSE) {
+            // Handle error
+        }
+
+        // Redirect to forum list after deletion
+        header("Location: newforum.php");
         exit();
     }
 }
@@ -236,6 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         .report-details img {
             max-width: 100px;
             margin-right: 10px;
+            cursor: pointer; /* Add cursor pointer to indicate clickable images */
         }
 
         .card {
@@ -269,6 +262,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             border: 1px solid #ddd;
             max-width: 150px;
             margin-right: 10px;
+            cursor: pointer; /* Add cursor pointer to indicate clickable images */
         }
 
         .vertical-divider {
@@ -319,6 +313,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         .vote-buttons button.downvote {
             background-color: #d32f2f;
         }
+
+        .forum-images {
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+        }
+
+        .forum-images img {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
@@ -334,7 +338,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         <div class="report-id"><?= htmlspecialchars($forum['tags']) ?></div>
                     </div>
                     <div class="vote-buttons">
-                    <form method="post" style="display:inline;">
+                        <form method="post" style="display:inline;">
                             <input type="hidden" name="action" value="like">
                             <button type="submit" class="upvote"><i class="fa fa-arrow-up"></i>  <?= htmlspecialchars($forum['likes_count']) ?></button>
                         </form>
@@ -342,12 +346,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                             <input type="hidden" name="action" value="dislike">
                             <button type="submit" class="downvote"><i class="fa fa-arrow-down"></i>  <?= htmlspecialchars($forum['dislikes_count']) ?></button>
                         </form>
-                       
+                        <?php if ($forum['writer']['id'] == $response_data['id']): ?>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="action" value="delete_forum">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="divider"></div>
                 <div class="report-author mt-3">
-                    <img src="http://127.0.0.1:8000/storage/profileimg<?= htmlspecialchars($forum['writer']['profileimg'] ?? 'path/to/default/image.jpg') ?>" alt="Author Image">
+                    <img src="http://143.198.218.9/backend/storage/profileimg/<?= htmlspecialchars($forum['writer']['profileimg'] ?? 'path/to/default/image.jpg') ?>" alt="Author Image">
                     <div class="report-author-info">
                         <div>By <?= htmlspecialchars($forum['writer']['username']) ?></div>
                         <div><?= time_elapsed_string($forum['created_at']) ?> Ago</div>
@@ -363,14 +372,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3 text-center">
-                        <img src="<?= htmlspecialchars($forum['writer']['profileimg'] ?? 'path/to/default/image.jpg') ?>" class="rounded-circle mb-2" alt="avatar" style="width: 80px;">
+                        <img src="http://143.198.218.9/backend/storage/profileimg/<?= htmlspecialchars($forum['writer']['profileimg'] ?? 'path/to/default/image.jpg') ?>" class="rounded-circle mb-2" alt="avatar" style="width: 80px; height: 80px; object-fit: cover; aspect-ratio: 1 / 1;">
                         <h5 class="mb-1"><?= htmlspecialchars($forum['writer']['username']) ?></h5>
                         <small class="text-muted">Posted <?= htmlspecialchars($forum['created_at']) ?></small>
-                        <div class="badge badge-success mt-2">Penulis Forum</div>
+                        <?php if ($forum['writer']['role'] === 'superadmin') : ?>
+                            <div class="badge mt-2" style="background-color: #dc3545; color: white;">Administrator</div>
+                        <?php elseif ($forum['writer']['role'] === 'user') : ?>
+                            <div class="badge mt-2" style="background-color: #198754; color: white;">Verified Member</div>
+                        <?php endif; ?>
                     </div>
                     <div class="col-md-8">
                         <div class="report-details">
                             <p><?= nl2br(htmlspecialchars($forum['content'])) ?></p>
+                            <button class="btn btn-secondary mb-2" type="button" data-toggle="collapse" data-target="#forumImages" aria-expanded="false" aria-controls="forumImages">
+                                Show/Hide Images
+                            </button>
+                            <div class="collapse" id="forumImages">
+                                <div class="forum-images">
+                                    <?php
+                                    $images = json_decode($forum['images'], true);
+                                    if ($images && is_array($images)) {
+                                        foreach ($images as $image) {
+                                            echo '<img src="http://143.198.218.9/backend/storage/forum/' . htmlspecialchars($image) . '" class="img-thumbnail mb-2" alt="Forum Image" data-toggle="modal" data-target="#imageModal" data-image="http://143.198.218.9/backend/storage/forum/' . htmlspecialchars($image) . '">';
+                                        }
+                                    }
+                                    ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -396,55 +424,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         <!-- Komentar akan dimuat di sini oleh JavaScript -->
     </div>
 
+    <!-- Modal for Image -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" alt="Forum Image" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        $(document).ready(function() {
-            var comments = <?= json_encode($forum['comments']) ?>;
-            var commentsPerPage = 5;
-            var currentPage = 1;
+    $(document).ready(function() {
+        var comments = <?= json_encode($forum['comments']) ?>;
+        var commentsPerPage = 5;
+        var currentPage = 1;
 
-            function loadComments(page) {
-                var start = (page - 1) * commentsPerPage;
-                var end = start + commentsPerPage;
-                var paginatedComments = comments.slice(start, end);
+        function loadComments(page) {
+            var start = (page - 1) * commentsPerPage;
+            var end = start + commentsPerPage;
+            var paginatedComments = comments.slice(start, end);
 
-                paginatedComments.forEach(function(comment) {
-                    var commentHtml = `
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-3 text-center">
-                                        <img src="http://127.0.0.1:8000/storage/profileimg/${comment.commentator.profileimg}" class="rounded-circle mb-2" alt="avatar" style="width: 80px;">
-                                        <h5 class="mb-1">${comment.commentator.username}</h5>
-                                        <small class="text-muted">Posted ${comment.created_at}</small>
-                                        <div class="badge badge-success mt-2">Comment</div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="report-details">
-                                            <p>${comment.comments_content}</p>
-                                        </div>
+            paginatedComments.forEach(function(comment) {
+                var badgeHtml = '';
+                if (comment.commentator.role === 'superadmin') {
+                    badgeHtml = '<div class="badge  mt-2"style="background-color: #dc3545; color: white;">Administrator</div>';
+                } else if (comment.commentator.role === 'user') {
+                    badgeHtml = '<div class="badge mt-2"style="background-color: #198754; color: white;">Verified Member</div>';
+                }
+
+                var commentHtml = `
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3 text-center">
+                                    <img src="http://143.198.218.9/backend/storage/profileimg/${comment.commentator.profileimg}" class="rounded-circle mb-2" alt="avatar" style="width: 80px; height: 80px; object-fit: cover; aspect-ratio: 1 / 1;">
+                                    <h5 class="mb-1">${comment.commentator.username}</h5>
+                                    <small class="text-muted">Posted ${comment.created_at}</small>
+                                    ${badgeHtml}
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="report-details">
+                                        <p>${comment.comments_content}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    `;
-                    $('#comment-section').append(commentHtml);
-                });
-            }
-
-            // Load initial comments
-            loadComments(currentPage);
-
-            // Load more comments on scroll
-            $(window).scroll(function() {
-                if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
-                    currentPage++;
-                    loadComments(currentPage);
-                }
+                    </div>
+                               `;
+                $('#comment-section').append(commentHtml);
             });
+        }
+
+        // Load initial comments
+        loadComments(currentPage);
+
+        // Load more comments on scroll
+        $(window).scroll(function() {
+            if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+                currentPage++;
+                loadComments(currentPage);
+            }
         });
+
+        // Handle image click to show in modal
+        $('.forum-images img').on('click', function() {
+            var imageUrl = $(this).data('image');
+            $('#modalImage').attr('src', imageUrl);
+            $('#imageModal').modal('show');
+        });
+    });
     </script>
 
     <?php include 'Components/main/footer.php'; ?>

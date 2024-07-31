@@ -2,7 +2,7 @@
 
 <?php
 // Mengambil data dari API
-$api_url = 'http://143.198.218.9:8000/api/streaming';
+$api_url = 'http://143.198.218.9/backend/api/streaming';
 $response = file_get_contents($api_url);
 $data = json_decode($response, true);
 ?>
@@ -135,7 +135,7 @@ $data = json_decode($response, true);
                     var badgeClass = video.status_stream === 'On Air' ? 'bg-danger' : 'bg-secondary';
                     var videoItem = `
                         <div class="video-item" data-id="${video.id}">
-                            <img src="http://127.0.0.1:8000/storage/thumbnails/${video.thumbnail}" alt="Video Thumbnail">
+                            <img src="http://143.198.218.9/backend/storage/thumbnails/${video.thumbnail}" alt="Video Thumbnail">
                             <div class="content">
                                 <h5>${video.judul_streaming}</h5>
                                 <div class="stats">

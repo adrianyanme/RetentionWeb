@@ -3,7 +3,7 @@ include "fetch_data.php";
 $streamId = $_GET['id'];
 
 // Ambil data dari API
-$apiUrl = "http://143.198.218.9:30000/api/streaming/$streamId";
+$apiUrl = "http://143.198.218.9/backend/api/streaming/$streamId";
 $response = file_get_contents($apiUrl);
 $stream = json_decode($response, true)['data'];
 $liveChats = $stream['livechat'];
@@ -15,6 +15,12 @@ $totalComments = count($comments); // Hitung total komentar
 
 // Cek apakah user sudah login
 $isLoggedIn = !empty($token);
+
+// Cek apakah user terverifikasi
+$isVerified = isset($response_data['verified']) && $response_data['verified'] === 'Yes';
+
+// Cek status stream
+$isOnAir = $stream['status_stream'] === 'On Air';
 
 // Proses pengiriman komentar
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'])) {
@@ -33,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'])) {
         ],
     ];
     $context  = stream_context_create($options);
-    $result = @file_get_contents('http://143.198.218.9:30000/api/streaming/comment', false, $context);
+    $result = @file_get_contents('http://143.198.218.9/backend/api/streaming/comment', false, $context);
     if ($result === FALSE) {
         $error = error_get_last();
         echo "Error: " . $error['message'];
@@ -275,8 +281,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'])) {
                 </div>
                 <div class="container container-custom">
                     <div class="video-container">
-                        <div class="embed-responsive embed-responsive-16by1">
-                            <iframe src="https://www.youtube.com/embed/DOOrIxw5xOw?si=tps1yhMB5TEhgdgv" title="YouTube live player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <div class="embed-responsive embed-responsive-16by9">
+                        <iframe src="<?= $stream['youtube_link'] ?>" title="YouTube live player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
                         </div>
                         <div class="stream-info">
                             <div class="stream-title"><?= $stream['judul_streaming'] ?></div>
@@ -288,13 +295,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'])) {
                             <form method="post">
                                 <input type="hidden" name="action" value="add_comment">
 
-                                <?php if ($isLoggedIn) { ?>
+                                <?php if ($isLoggedIn && $isVerified && !$isOnAir) { ?>
                                     <div class="mb-3">
                                         <textarea class="form-control" name="comment_content" rows="3" placeholder="Add your comment here..."></textarea>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Add Comment</button>
-                                <?php } else { ?>
+                                <?php } elseif (!$isLoggedIn) { ?>
                                     <p class="text-warning">Please log in to add a comment.</p>
+                                <?php } elseif (!$isVerified) { ?>
+                                    <p class="text-warning">Your account is not verified. Please verify your account to add a comment.</p>
+                                <?php } elseif ($isOnAir) { ?>
+                                    <p class="text-warning">Comments are disabled while the stream is On Air.</p>
                                 <?php } ?>
                             </form>
                         </div>
@@ -332,12 +343,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'])) {
                             <?php } ?>
                         </div>
                         <form class="chat-form" id="chat-form">
-
-                            <?php if ($isLoggedIn) { ?>
-                                <button type="submit" id="send-chat">Send</button>
+                            <?php if ($isLoggedIn && $isVerified && $isOnAir) { ?>
                                 <input type="text" name="chat" id="chat-input" placeholder="Type your message here...">
-                            <?php } else { ?>
+                                <button type="submit" id="send-chat">Send</button>
+                            <?php } elseif (!$isLoggedIn) { ?>
                                 <p class="text-warning">Please log in to send a message.</p>
+                            <?php } elseif (!$isVerified) { ?>
+                                <p class="text-warning">Your account is not verified. Please verify your account to send a message.</p>
+                            <?php } elseif (!$isOnAir) { ?>
+                                <p class="text-warning">Live chat is disabled while the stream is Off Air.</p>
                             <?php } ?>
                         </form>
                     </div>
@@ -351,7 +365,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'])) {
     <script>
         function loadLiveChat() {
             $.ajax({
-                url: 'http://127.0.0.1:8000/api/streaming/<?= $streamId ?>',
+                url: 'http://143.198.218.9/backend/api/streaming/<?= $streamId ?>',
                 method: 'GET',
                 success: function(data) {
                     var chatMessages = $('#chat-messages');
@@ -375,7 +389,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'])) {
             }
 
             $.ajax({
-                url: 'http://127.0.0.1:8000/api/livechat',
+                url: 'http://143.198.218.9/backend/api/livechat',
                 method: 'POST',
                 contentType: 'application/json',
                 headers: {
@@ -396,8 +410,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'])) {
         }
 
         $(document).ready(function() {
-            loadLiveChat();
-            setInterval(loadLiveChat, 1000);
+            <?php if ($isOnAir) { ?>
+                loadLiveChat();
+                setInterval(loadLiveChat, 1000);
+            <?php } ?>
 
             $('#chat-form').submit(function(e) {
                 e.preventDefault();

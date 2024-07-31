@@ -2,7 +2,7 @@
 include 'fetch_data.php';
 
 // Ambil data dari API
-$api_url = 'http://143.198.218.9:30000/api/forums'; // URL API kamu
+$api_url = 'http://143.198.218.9/backend/api/forums'; // URL API kamu
 $response = file_get_contents($api_url);
 $data = json_decode($response, true);
 
@@ -10,7 +10,7 @@ $data = json_decode($response, true);
 $user = null;
 if (isset($_SESSION['token'])) {
     $token = $_SESSION['token'];
-    $me_url = 'http://127.0.0.1:8000/api/me'; // URL API untuk endpoint 'me'
+    $me_url = 'http://143.198.218.9/backend/api/me'; // URL API untuk endpoint 'me'
     $options = [
         'http' => [
             'header'  => "Authorization: Bearer $token\r\n",

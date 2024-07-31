@@ -1,7 +1,7 @@
 <?php
 include 'fetch_data.php';
 // Ambil data dari API
-$apiUrl = "http://143.198.218.9:30000/api/streaming";
+$apiUrl = "http://143.198.218.9/backend/api/streaming";
 $response = file_get_contents($apiUrl);
 $data = json_decode($response, true);
 $streams = $data['data'];
@@ -87,7 +87,7 @@ $streams = $data['data'];
             $statusClass = 'on-air';
         ?>
             <a href="detail_stream.php?id=<?= $stream['id'] ?>" class="stream-item">
-                <img src="http://127.0.0.1:8000/storage/thumbnails/<?= $stream['thumbnail'] ?>" alt="Stream Image">
+                <img src="http://143.198.218.9/backend/storage/thumbnails/<?= $stream['thumbnail'] ?>" alt="Stream Image">
                 <div class="stream-info">
                     <div class="stream-title text-white"><?= $stream['judul_streaming'] ?></div>
                     <div class="stream-status <?= $statusClass ?>"><?= $stream['status_stream'] ?></div>
@@ -102,7 +102,7 @@ $streams = $data['data'];
             $statusClass = 'off-air';
         ?>
             <a href="detail_stream.php?id=<?= $stream['id'] ?>" class="stream-item">
-                <img src="http://127.0.0.1:8000/storage/thumbnails/<?= $stream['thumbnail'] ?>" alt="Stream Image">
+                <img src="http://143.198.218.9/backend/storage/thumbnails/<?= $stream['thumbnail'] ?>" alt="Stream Image">
                 <div class="stream-info">
                     <div class="stream-title text-white"><?= $stream['judul_streaming'] ?></div>
                     <div class="stream-status <?= $statusClass ?>"><?= $stream['status_stream'] ?></div>

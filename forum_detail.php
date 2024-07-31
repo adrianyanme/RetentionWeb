@@ -34,7 +34,7 @@ function sendApiRequest($url, $method = 'POST', $token = null, $data = null)
 $user_id = null;
 if (isset($_SESSION['token'])) {
     $token = $_SESSION['token'];
-    $user_info_url = "http://143.198.218.9:30000/api/me"; // URL API untuk mendapatkan informasi pengguna
+    $user_info_url = "http://143.198.218.9/backend/api/me"; // URL API untuk mendapatkan informasi pengguna
     $user_info = sendApiRequest($user_info_url, 'GET', $token);
 
     // Debug: Tampilkan informasi pengguna yang diambil
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($user_id) {
         $action = $_POST['action'] ?? null;
         if ($action === 'like' || $action === 'dislike') {
-            $api_url = "http://143.198.218.9:30000/api/forums/$id/$action";
+            $api_url = "http://143.198.218.9/backend/api/forums/$id/$action";
 
             // Debug: Tampilkan URL yang digunakan
             
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($action === 'add_comment') {
             $comment_content = $_POST['comment_content'] ?? '';
             if (!empty($comment_content)) {
-                $api_url = "http://143.198.218.9:30000/api/forums/comment";
+                $api_url = "http://143.198.218.9/backend/api/forums/comment";
                 $data = http_build_query(['forums_id' => $id, 'comments_content' => $comment_content]);
                 $response = sendApiRequest($api_url, 'POST', $token, $data);
 
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Ambil data dari API
-$api_url = 'http://143.198.218.9:30000/api/forums/' . $id; // URL API kamu
+$api_url = 'http://143.198.218.9/backend/api/forums/' . $id; // URL API kamu
 $response = file_get_contents($api_url);
 $data = json_decode($response, true);
 $forum = $data['data'] ?? [];
@@ -120,7 +120,7 @@ $comments = $forum['comments'] ?? [];
 
 // Tambahkan path ke gambar
 if (!empty($forum['image'])) {
-    $forum['image'] = 'http://143.198.218.9:30000/storage/forum/' . $forum['image'];
+    $forum['image'] = 'http://143.198.218.9/backend/storage/forum/' . $forum['image'];
 }
 ?>
 

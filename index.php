@@ -24,7 +24,14 @@
         .table thead th,
         .table tbody td .table tbody tr .table tbody td {
             color: white;
-            /* Menambahkan warna putih untuk teks di dalam tabel */
+            
+        }
+
+        .carousel-item img {
+            z-index: 1; /* Pastikan z-index cukup tinggi */
+            position: relative; /* Pastikan posisi relatif */
+            display: block; /* Pastikan gambar ditampilkan */
+            visibility: visible; /* Pastikan gambar terlihat */
         }
     </style>
     <!-- <link rel="stylesheet" href="styles.css"> -->
@@ -37,45 +44,61 @@
         <div class="container pt-4 pt-xl-5">
             <div class="carousel slide" data-bs-ride="carousel" id="carousel-1" style="height: 600px;">
                 <div class="carousel-inner h-100">
-                    <div class="carousel-item active h-100"><img class="w-100 d-block position-absolute h-100 fit-cover" src="" alt="Slide Image" style="z-index: -1;">
+                    <div class="carousel-item active h-100">
+                        <img class="w-100 d-block position-absolute h-100 fit-cover visibility: visible" src="assets/img/header.jpeg" alt="Slide Image" style="z-index: -1;">
                         <div class="container d-flex flex-column justify-content-center h-100">
                             <div class="row">
                                 <div class="col-md-6 col-xl-4 offset-md-2">
                                     <div style="max-width: 350px;">
                                         <h1 class="text-uppercase fw-bold">REtention<br>Digital pengadilan</h1>
-                                        <p class="my-3">Forum, Streaming, Request and Report</p><a class="btn btn-lg me-2 btn-warning" role="button" href="#">Login</a><a class="btn btn-lg btn-outline-warning" role="button" href="#">Sign Up</a>
+                                        <p class="my-3">Forum, Streaming, Request and Report</p><a class="btn btn-lg me-2 btn-warning" role="button" href="#" data-bs-toggle="modal" data-bs-target="#signupModal">Sign up</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="carousel-item active h-100"><img class="w-100 d-block position-absolute h-100 fit-cover" src="/assets/img/header.jpeg" alt="Slide Image" style="z-index: -1;">
+                    <div class="carousel-item h-100">
+                        <img class="w-100 d-block position-absolute h-100 fit-cover" src="assets/img/header.jpeg" alt="Slide Image" style="z-index: -1;">
                         <div class="container d-flex flex-column justify-content-center h-100">
                             <div class="row">
                                 <div class="col-md-6 col-xl-4 offset-md-2">
                                     <div style="max-width: 350px;">
                                         <h1 class="text-uppercase fw-bold">REtention<br>Digital pengadilan</h1>
-                                        <p class="my-3">Forum, Streaming, Request and Report</p><a class="btn btn-lg me-2 btn-warning" role="button" href="#">Login</a><a class="btn btn-lg btn-outline-warning" role="button" href="#">Sign Up</a>
+                                        <p class="my-3">Forum, Streaming, Request and Report</p><a class="btn btn-lg me-2 btn-warning" role="button" href="#" data-bs-toggle="modal" data-bs-target="#signupModal">Sign up</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="carousel-item active h-100"><img class="w-100 d-block position-absolute h-100 fit-cover" src="/assets/img/header.jpeg" alt="Slide Image" style="z-index: -1;">
+                    <div class="carousel-item h-100">
+                        <img class="w-100 d-block position-absolute h-100 fit-cover" src="assets/img/header.jpeg" alt="Slide Image" style="z-index: -1;">
                         <div class="container d-flex flex-column justify-content-center h-100">
                             <div class="row">
                                 <div class="col-md-6 col-xl-4 offset-md-2">
                                     <div style="max-width: 350px;">
                                         <h1 class="text-uppercase fw-bold">REtention<br>Digital pengadilan</h1>
-                                        <p class="my-3">Forum, Streaming, Request and Report</p><a class="btn btn-lg me-2 btn-warning" role="button" href="#">Login</a><a class="btn btn-lg btn-outline-warning" role="button" href="#">Sign Up</a>
+                                        <p class="my-3">Forum, Streaming, Request and Report</p><a class="btn btn-lg me-2 btn-warning" role="button" href="#" data-bs-toggle="modal" data-bs-target="#signupModal">Sign up</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div><a class="carousel-control-prev" href="#carousel-1" role="button" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span><span class="visually-hidden">Previous</span></a><a class="carousel-control-next" href="#carousel-1" role="button" data-bs-slide="next"><span class="carousel-control-next-icon"></span><span class="visually-hidden">Next</span></a></div>
-                <div class="carousel-indicators"><button type="button" data-bs-target="#carousel-1" data-bs-slide-to="0" class="active"></button> <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="1"></button> <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="2"></button></div>
+                <div>
+                    <a class="carousel-control-prev" href="#carousel-1" role="button" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carousel-1" role="button" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                        <span class="visually-hidden">Next</span>
+                    </a>
+                </div>
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="2"></button>
+                </div>
             </div>
         </div>
     </header>
@@ -85,7 +108,7 @@
         </div> -->
     </section>
     <section>
-        <div class="container bg-dark py-5">
+        <div class="container bg-dark py-5 border-radius-20">
             <div class="row">
                 <div class="col-md-8 col-xl-6 text-center mx-auto">
                     <p class="fw-bold text-warning mb-2">Schedule</p>
@@ -163,7 +186,7 @@
                         <div class="card bg-secondary-light">
                             <div class="card-body text-center px-4 py-5 px-md-5">
                                 <p class="fw-bold text-secondary card-text mb-2">Streaming</p>
-                                <h5 class="fw-bold card-title mb-3">Menonton&nbsp;,Menyimak, Diskusi dan Transparansi</h5><button class="btn btn-secondary btn-sm" type="button">Learn more</button>
+                                <h5 class="fw-bold card-title mb-3">Lorem ipsum dolor sit&nbsp;nullam et quis ad cras porttitor<br><?php echo $response_data['id']; ?></h5><button class="btn btn-info btn-sm" type="button">Learn more</button>
                             </div>
                         </div>
                     </div>
@@ -171,7 +194,7 @@
                         <div class="card bg-info-light">
                             <div class="card-body text-center px-4 py-5 px-md-5">
                                 <p class="fw-bold text-info card-text mb-2">Request dan Report</p>
-                                <h5 class="fw-bold card-title mb-3">Kebutuhan Pendukung&nbsp;</h5><button class="btn btn-info btn-sm" type="button">Learn more</button>
+                                <h5 class="fw-bold card-title mb-3">Lorem ipsum dolor sit&nbsp;nullam et quis ad cras porttitor</h5><button class="btn btn-info btn-sm" type="button">Learn more</button>
                             </div>
                         </div>
                     </div>
@@ -182,8 +205,74 @@
     
     <?php include 'Components/main/footer.php'; ?>
     
+    <!-- Sign Up Modal -->
+    <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="signupModalLabel">Sign Up</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="signupForm" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <input type="email" class="form-control" placeholder="Email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="Username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="First Name" name="firstname" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="Last Name" name="lastname" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" class="form-control" placeholder="Password" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="NIK" name="nik" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ktp_image" class="form-label">KTP Image</label>
+                            <input type="file" class="form-control" id="ktp_image" name="ktp_image" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="profileimg" class="form-label">Profile Image</label>
+                            <input type="file" class="form-control" id="profileimg" name="profileimg" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">Sign Up</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/bold-and-dark.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('#signupForm').on('submit', function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: 'http://143.198.218.9/backend/api/register',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    alert('Registration successful!');
+                    $('#signupModal').modal('hide');
+                },
+                error: function(xhr, status, error) {
+                    alert('Registration failed: ' + xhr.responseText);
+                }
+            });
+        });
+    });
+    </script>
 </body>
 
 </html>

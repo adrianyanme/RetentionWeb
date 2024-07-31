@@ -4,7 +4,7 @@ $id = isset($_GET['id']) ? $_GET['id'] : null;
 
 if ($id) {
     // Panggil API untuk mendapatkan detail data berdasarkan ID
-    $apiUrl = 'http://143.198.218.9:30000/api/jdh/' . $id;
+    $apiUrl = 'http://143.198.218.9/backend/api/jdh/' . $id;
     $jsonData = file_get_contents($apiUrl);
     $data = json_decode($jsonData, true)['data'];
 } else {
@@ -210,14 +210,14 @@ if ($id) {
                                 </tr>
                             </tbody>
                         </table>
-                        <a href="http://143.198.218.9:30000/storage/jdh/<?php echo htmlspecialchars($data['lampiran']); ?>" class="btn-download" download>Download</a>
+                        <a href="http://143.198.218.9/backend/storage/jdh/<?php echo htmlspecialchars($data['lampiran']); ?>" class="btn-download" download>Download</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="preview-file">
                     <h5>Preview File</h5>
-                    <embed class="pdf" src="http://143.198.218.9:30000/storage/jdh/<?php echo htmlspecialchars($data['lampiran']); ?>" width="800" height="500">
+                    <embed class="pdf" src="http://143.198.218.9/backend/storage/jdh/<?php echo htmlspecialchars($data['lampiran']); ?>" width="800" height="500">
                    
                 <div class="related-docs">
                     <h5>Produk Hukum Terkait</h5>

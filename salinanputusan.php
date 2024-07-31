@@ -2,7 +2,7 @@
 include "fetch_data.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $url = 'http://143.198.218.9:30000/api/persalinan';
+    $url = 'http://143.198.218.9/backend/api/persalinan';
     $token = $_SESSION['token']; // Ambil token dari session
 
     $data = [
@@ -45,10 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "<script>alert('Terjadi kesalahan: ' . $response);</script>";
     }
 }
+
+// Cek apakah user terverifikasi
+$isVerified = isset($response_data['verified']) && $response_data['verified'] === 'Yes';
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,7 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             flex-direction: column;
             min-height: 100vh;
         }
-
         main {
             flex: 1;
             display: flex;
@@ -79,7 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             padding: 50px;
             margin-bottom: 50px;
         }
-
         .container {
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
@@ -91,53 +91,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             margin: auto;
             margin-bottom: 50px;
         }
-
         .sidebar {
             background-color: #263238;
             padding: 30px;
             width: 250px;
             border-radius: 10px;
         }
-
         .sidebar .step {
             margin-bottom: 20px;
         }
-
         .sidebar .step.active {
             font-weight: bold;
         }
-
         .sidebar .step span {
             display: block;
             font-size: 1.2rem;
         }
-
         .form-container {
             padding: 30px;
             flex: 1;
         }
-
         .form-container h2 {
             margin-bottom: 20px;
             font-size: 1.5rem;
             color: #4834d4;
         }
-
         .form-container p {
             margin-bottom: 30px;
             color: #666;
         }
-
         .form-container .form-group {
             margin-bottom: 20px;
         }
-
         .form-container .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: 500;
         }
-
         .form-container .form-group input,
         .form-container .form-group select {
             width: 100%;
@@ -145,13 +135,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-
         .form-container .form-group input:focus,
         .form-container .form-group select:focus {
             border-color: #4834d4;
             outline: none;
         }
-
         .form-container .btn {
             background-color: #4834d4;
             color: #fff;
@@ -160,24 +148,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-radius: 5px;
             cursor: pointer;
         }
-
         .form-container .btn:hover {
             background-color: #341f97;
         }
-
         .form-container .btn:disabled {
             background-color: #ccc;
             cursor: not-allowed;
         }
-
         .step {
             display: none;
         }
-
         .step.active {
             display: block;
         }
-
         .header {
             background-image: url('https://th.bing.com/th/id/R.96525332caecb290910d28ebe289e5fe?rik=1IsDNYAEaEoumA&riu=http%3a%2f%2fwww.origiin.com%2fbin2017%2fwp-content%2fuploads%2f2018%2f09%2flaw-colleges-banner.jpg&ehk=P%2fKdeZUaDvgaOCO2PUHBgWlX5GI7BP4vHvPn4IcCXeY%3d&risl=&pid=ImgRaw&r=0');
             background-size: cover;
@@ -186,17 +169,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             text-align: center;
             color: white;
         }
-
         .header h1 {
             font-size: 3rem;
             margin-bottom: 10px;
         }
-
         .header p {
             font-size: 1.5rem;
             margin-bottom: 30px;
         }
-
         .page-header {
             background-image: url('https://th.bing.com/th/id/R.96525332caecb290910d28ebe289e5fe?rik=1IsDNYAEaEoumA&riu=http%3a%2f%2fwww.origiin.com%2fbin2017%2fwp-content%2fuploads%2f2018%2f09%2flaw-colleges-banner.jpg&ehk=P%2fKdeZUaDvgaOCO2PUHBgWlX5GI7BP4vHvPn4IcCXeY%3d&risl=&pid=ImgRaw&r=0');
             background-size: cover;
@@ -206,16 +186,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: white;
             margin-bottom: 30px;
         }
-
         .page-header h2 {
             font-size: 2.5rem;
             margin-bottom: 10px;
         }
-
         .page-header p {
             font-size: 1.2rem;
         }
-
         .custom-footer {
             background-color: #4834d4;
             color: white;
@@ -228,7 +205,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-
 <body>
     <?php include 'Components/main/navbar.php'; ?>
     <div class="page-header">
@@ -255,7 +231,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </div>
         <div class="form-container">
-
             <form method="POST" enctype="multipart/form-data">
                 <div class="step step-1 active">
                     <h2 class="text-warning">Formulir Perdata</h2>
@@ -265,7 +240,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <p class="text-white">Pastikan menggunakan email aktif, pemberitahuan akan di kirimkan melalui E-Mail anda</p>
                         <input type="email" id="email" name="email" placeholder="e.g. stephenking@lorem.com" required>
                     </div>
-
                     <div class="form-group">
                         <label for="jenissalinan" class="text-warning">Jenis Salinan</label>
                         <p class="text-white">Salinan Putusan yang dapat diterbitkan melalui layanan ini adalah Perkara yang dalam proses persidangan tidak menggunakan layanan e-Litigasi.</p>
@@ -323,13 +297,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <p class="text-white">Contoh : Indra Ari Melawan Wahyu Putra</p>
                         <input type="text" id="namaparapihak" name="namaparapihak" placeholder="Nama Para Pihak" required>
                     </div>
-
                 </div>
                 <div class="step step-3">
                     <h2 class="text-warning">UPLOAD DOKUMEN PERSYARATAN</h2>
                     <p class="text-white">Dokumen Persyaratan Bagi Prinsipal</p>
                     <div class="form-group">
-                        <label for="ktppemohon" class="text-warning">Upload Kartu Tanda Penduduk (KTP)</label>
+                    <label for="ktppemohon" class="text-warning">Upload Kartu Tanda Penduduk (KTP)</label>
                         <p class="text-white">Dokumen dapat berupa file .pdf atau Foto</p>
                         <input type="file" id="ktppemohon" name="ktppemohon" accept=".pdf,.png,.jpg,.jpeg" required>
                     </div>
@@ -343,8 +316,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <p class="text-white">Persyaratan ini hanya berlaku untuk permohonan salinan putusan banding/kasasi/PK. Dokumen dapat berupa file .pdf atau Foto</p>
                         <input type="file" id="relaaspemberitahuanputusan" name="relaaspemberitahuanputusan" accept=".pdf,.png,.jpg,.jpeg" required>
                     </div>
-
-
                 </div>
                 <div class="step step-4">
                     <h2 class="text-warning">TAHAPAN TERAKHIR</h2>
@@ -357,12 +328,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="step-buttons">
                     <button type="button" class="btn prev-step" disabled>Previous</button>
                     <button type="button" class="btn next-step">Next Step</button>
-                    <button type="submit" class="btn submit-form" style="display: none;">Submit</button>
+                    <?php if ($isVerified) { ?>
+                        <button type="submit" class="btn submit-form" style="display: none;">Submit</button>
+                    <?php } else { ?>
+                        <p class="text-warning">Your account is not verified. Please verify your account to submit the form.</p>
+                    <?php } ?>
                 </div>
             </form>
         </div>
     </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -407,5 +381,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         });
     </script>
 </body>
-
 </html>

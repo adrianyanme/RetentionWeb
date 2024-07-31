@@ -1,7 +1,7 @@
 <?php
 include "fetch_data.php";
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $url = 'http://143.198.218.9:30000/api/layanan-pengaduan';
+    $url = 'http://143.198.218.9/backend/api/layanan-pengaduan';
     $data = [
         'judullaporan' => $_POST['judullaporan'],
         'isilaporan' => $_POST['isilaporan'],
@@ -24,6 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "<script>alert('Terjadi kesalahan: ' + $response);</script>";
     }
 }
+
+// Cek apakah user terverifikasi
+$isVerified = isset($response_data['verified']) && $response_data['verified'] === 'Yes';
 ?>
 
 <!DOCTYPE html>
@@ -148,7 +151,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <input type="file" id="uploadLampiran" name="lampiran" class="form-control-file">
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
-                        <button type="submit" class="btn btn-danger">LAPOR!</button>
+                        <?php if ($isVerified) { ?>
+                            <button type="submit" class="btn btn-danger">LAPOR!</button>
+                        <?php } else { ?>
+                            <p class="text-warning">Your account is not verified. Please verify your account to submit a report.</p>
+                        <?php } ?>
                         <span class="ml-2">Laporan yang terkirim secara Anonim dan Rahasia.</span>
                     </div>
                 </form>
