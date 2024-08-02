@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
                     </div>
                     <button type="submit" class="btn btn-warning w-100">Login</button>
                     <div class="text-center mt-3">
-                        <p>Not a member yet? <a href="#">Sign Up</a>.</p>
+                        <p>Not a member yet? <a href="#" id="signupLink">Sign Up</a>.</p>
                     </div>
                 </form>
             </div>
@@ -146,5 +146,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Font Awesome -->
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function() {
+    $('#signupLink').on('click', function(e) {
+        e.preventDefault();
+        $('#loginModal').modal('hide');
+        setTimeout(function() {
+            $('#signupModal').modal('show');
+        }, 500); // Delay untuk memastikan modal login benar-benar tertutup
+    });
+
+    // Pastikan modal "Sign Up" ditutup dengan benar
+    $('#signupModal').on('hidden.bs.modal', function () {
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    });
+});
+</script>
 </body>
 </html>

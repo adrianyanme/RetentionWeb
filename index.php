@@ -206,47 +206,48 @@
     <?php include 'Components/main/footer.php'; ?>
     
     <!-- Sign Up Modal -->
-    <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="signupModalLabel">Sign Up</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="signupForm" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <input type="email" class="form-control" placeholder="Email" name="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="Username" name="username" required>
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="First Name" name="firstname" required>
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="Last Name" name="lastname" required>
-                        </div>
-                        <div class="mb-3">
-                            <input type="password" class="form-control" placeholder="Password" name="password" required>
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="NIK" name="nik" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="ktp_image" class="form-label">KTP Image</label>
-                            <input type="file" class="form-control" id="ktp_image" name="ktp_image" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="profileimg" class="form-label">Profile Image</label>
-                            <input type="file" class="form-control" id="profileimg" name="profileimg" required>
-                        </div>
-                        <button type="submit" class="btn btn-warning w-100">Sign Up</button>
-                    </form>
-                </div>
+    <!-- Sign Up Modal -->
+<div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="signupModalLabel">Sign Up</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="signupForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <input type="email" class="form-control" placeholder="Email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" placeholder="Username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" placeholder="First Name" name="firstname" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" placeholder="Last Name" name="lastname" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" placeholder="Password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" placeholder="NIK" name="nik" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ktp_image" class="form-label">KTP Image</label>
+                        <input type="file" class="form-control" id="ktp_image" name="ktp_image" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="profileimg" class="form-label">Profile Image</label>
+                        <input type="file" class="form-control" id="profileimg" name="profileimg" required>
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100">Sign Up</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/bold-and-dark.js"></script>
