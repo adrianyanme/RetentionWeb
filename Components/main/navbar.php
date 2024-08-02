@@ -4,6 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 include_once "fetch_data.php"; // Pastikan ini diubah sesuai dengan struktur file Anda
 
+$error_message = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     $login = isset($_POST['login']) ? $_POST['login'] : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
@@ -12,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
         $error_message = 'Please enter both username and password.';
     } else {
         // URL API Login
-        $api_url = 'http://143.198.218.9/backend/api/login'; // Ganti dengan URL API login kamu
+        $api_url = 'http://143.198.9/backend/api/login'; // Ganti dengan URL API login kamu
 
         // Data yang akan dikirim ke API
         $data = array(
@@ -61,6 +63,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     }
 }
 ?>
+
+<script>
+    var errorMessage = <?php echo json_encode($error_message); ?>;
+</script>
 
 <nav class="navbar navbar-expand-lg navbar-light sticky-top" style="background-color: rgba(238, 139, 0, 0.8); margin-bottom: 0; backdrop-filter: blur(10px);">
     <div class="container-fluid">
@@ -120,9 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <?php if (isset($error_message)): ?>
-                    <p style="color:red;"><?php echo htmlspecialchars($error_message); ?></p>
-                <?php endif; ?>
+                <div id="loginError" class="alert alert-danger" style="display: none;"></div> <!-- Elemen untuk pesan kesalahan -->
                 <form action="" method="post">
                     <div class="mb-3">
                         <input type="text" class="form-control" placeholder="Username" name="login">
@@ -161,6 +165,12 @@ $(document).ready(function() {
         $('body').removeClass('modal-open');
         $('.modal-backdrop').remove();
     });
+
+    // Tampilkan pesan kesalahan jika ada
+    if (errorMessage) {
+        $('#loginError').text(errorMessage).show();
+        $('#loginModal').modal('show');
+    }
 });
 </script>
 </body>
